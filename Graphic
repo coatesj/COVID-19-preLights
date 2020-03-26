@@ -1,8 +1,38 @@
-#Read and appropriately name data
-read.csv("TEST.csv") -> Data 
-head(Data)
-colnames(Data)
-names(Data)[names(Data) == "ï..start"] <- "start"
+library(shiny)
+library(timevis)
 
-#Plot data 
-timevis(Data, showZoom = TRUE, fit = TRUE)
+#Import data
+readRDS("final_data.rds") -> final_data
+
+# Define UI for application
+    ui = fluidPage(
+        
+        titlePanel("preprints in response to COVID-19"),
+        
+        tags$style(
+            ".event { background: crimson; }
+      .preprint { background: deepskyblue; }
+      .bad { background: chocolate; }"
+        ),
+        timevisOutput("timeline"),
+        #Add buttons to allow user to control view
+        actionButton("btn", "Fit all items"),
+        actionButton("btn2", "Center on first reported case")
+    )
+    
+# Define server logic  
+    server <- function(input, output, session) {
+        output$timeline <- renderTimevis({
+            timevis(final_data)
+        })
+        #Make buttons work
+        observeEvent(input$btn, {
+            fitWindow("timeline", list(animation = TRUE))
+        })
+        observeEvent(input$btn2, {
+            centerItem("timeline", 1, (animation = TRUE))
+        })
+    }
+  
+# Run the application 
+shinyApp(ui = ui, server = server)
