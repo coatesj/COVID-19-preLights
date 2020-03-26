@@ -1,0 +1,8 @@
+#Read and appropriately name data
+read.csv("TEST.csv") -> Data 
+head(Data)
+colnames(Data)
+names(Data)[names(Data) == "ï..start"] <- "start"
+
+#Plot data 
+timevis(Data, showZoom = TRUE, fit = TRUE)
