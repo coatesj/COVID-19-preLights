@@ -20,7 +20,7 @@ shinyApp(
                   tabPanel("Timeline",
                            fluidPage(
                              
-                             titlePanel("Preprints in response to COVID-19, maintained by the @preLights team"),
+                             titlePanel("Landmark preprints in response to COVID-19, maintained by the @preLights team"),
                              
                              tags$style(
                                ".event { background: darksalmon; }
@@ -42,15 +42,15 @@ shinyApp(
                              fluidRow(
                                column(2,
                                       h4(" ")),
-                               h3("Key: Red = Event, Blue = Preprint, Orange = Important caveat/comment on preprint")),
+                               h3("Key: Orange = Event, Teal = Preprint, yellow = Important caveat/comment on preprint (see table). Last updated: 29/03/2020")),
                              
-                             br(),
+                             #br(),
                              
                              fluidRow(
                                column(2,
                                       h4("")),
                                br(),
-                               h4("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Mate Palfy, Sejal Davla & Jonny Coates")),
+                               h3("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Mate Palfy, Sejal Davla & Jonny Coates. For questions or queries please contact jc2216@cam.ac.uk or prelights@biologists.com")),
                              
                              br(),
                              
