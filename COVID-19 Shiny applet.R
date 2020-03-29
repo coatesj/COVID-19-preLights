@@ -1,8 +1,8 @@
 #
-# Code relating to the preprints in response to CODIV-19 graphic 
+# Code relating to the preprints in response to COVID-19 timeline 
 # Maintained by the team @preLights
-#
-# Last update: 
+# 
+# Last update: 28/03/2020
 #
 
 #Load relevant libraries
@@ -11,64 +11,85 @@ library(timevis)
 
 #Import data
 readRDS("final_data.rds") -> final_data
+readRDS("infotable.rds") -> info_table
 
-# Define UI for application
-    ui = fluidPage(
-        
-        titlePanel("Preprints in response to COVID-19, maintained by the @preLights team"),
-        
-        tags$style(
-          ".event { background: darksalmon; }
-      .preprint { background: deepskyblue; }
+
+#Define UI
+shinyApp(
+  ui = navbarPage("Preprints & COVID-19",
+                  tabPanel("Timeline",
+                           fluidPage(
+                             
+                             titlePanel("Preprints in response to COVID-19, maintained by the @preLights team"),
+                             
+                             tags$style(
+                               ".event { background: darksalmon; }
+      .preprint { background: darkturquoise; }
       .bad { background: moccasin; }"
-        ),
-        timevisOutput("timeline"),
-
-#Add buttons to allow user to control view
-        actionButton("btn", "Fit all items"),
-        actionButton("btn2", "Center on first reported case"),
-    
-    
-#Add rows underneath containing additional text
-    br(),
-    br(),
-    
-fluidRow(
-  column(2,
-         h4(" ")),
-  h3("Key: Red = Event, Blue = Preprint, Orange = falsified/questionable preprint")),
-
-br(),
-
-    fluidRow(
-      column(2,
-             h4("Authors et al / preprint title")),
-      br(),
-      p("I am interested in immune cell biology, particularly how immune cells are capable of performing such wide ranging functions and how they adapt to different environmental cues such as glucose or hypoxia. During my masters degree, I investigated the presence of fibroblast subtypes and the role of PGE2 signalling in fibrosis. I completed my PhD in Iwan Evans' lab at the University of Sheffield investigating the existence of macrophage subtypes in Drosophila. I am currently a postdoctoral researcher based in Cambridge. In my current research I have branched out into the adaptive immune response and I am investigating the impact of hypoxia on the transcriptional and epigenetic landscape of cytotoxic T cells. I have a wide interests in cell/molecular biology, metabolism and tumour immunology with a penchant for microscopy and big data.")),
-    
-    br(),
-    
-    fluidRow(
-      column(2,
-             h4("Authors et al / preprint title")),
-      br(),
-      p("I am interested in immune cell biology, particularly how immune cells are capable of performing such wide ranging functions and how they adapt to different environmental cues such as glucose or hypoxia. During my masters degree, I investigated the presence of fibroblast subtypes and the role of PGE2 signalling in fibrosis. I completed my PhD in Iwan Evans' lab at the University of Sheffield investigating the existence of macrophage subtypes in Drosophila. I am currently a postdoctoral researcher based in Cambridge. In my current research I have branched out into the adaptive immune response and I am investigating the impact of hypoxia on the transcriptional and epigenetic landscape of cytotoxic T cells. I have a wide interests in cell/molecular biology, metabolism and tumour immunology with a penchant for microscopy and big data."))
-    )
-    
-# Define server logic  
-    server <- function(input, output, session) {
-        output$timeline <- renderTimevis({
-            timevis(final_data)
-        })
-        
-#Make buttons work
-        observeEvent(input$btn, {
-            fitWindow("timeline", list(animation = TRUE))
-        })
-        observeEvent(input$btn2, {
-            centerItem("timeline", 1, (animation = TRUE))
-        })
-    }
+                             ),
+                             timevisOutput("timeline"),
+                             
+                             #Add buttons to allow user to control view
+                             actionButton("btn", "Fit all items"),
+                             actionButton("btn2", "Center on first reported case"),
+                             actionButton("btn3", "Center on 1st Feb"),
+                             actionButton("btn4", "Center on 1st March"),
+                             
+                             #Add rows underneath containing additional text
+                             br(),
+                             br(),
+                             
+                             fluidRow(
+                               column(2,
+                                      h4(" ")),
+                               h3("Key: Red = Event, Blue = Preprint, Orange = Important caveat/comment on preprint")),
+                             
+                             br(),
+                             
+                             fluidRow(
+                               column(2,
+                                      h4("")),
+                               br(),
+                               h4("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Mate Palfy, Sejal Davla & Jonny Coates")),
+                             
+                             br(),
+                             
+                             fluidRow(
+                               column(2,
+                                      h4("")),
+                               h4("To use the timeline, navigate by clicking and dragging or through the use of the buttons. Hovering the mouse over an item will reveal more details pertaining to that point. Navigate between the timeline view and the table view using the navigation buttons at the top of this page"))
+                           )),
+                  
+                  # Page 2
+                  
+                  tabPanel("Table",
+                           DT::dataTableOutput("table")
+                  )),
   
-# Run the application 
-shinyApp(ui = ui, server = server)
+  
+  # Server settings  
+  server <- function(input, output, session) {
+    output$timeline <- renderTimevis({
+      timevis(final_data)
+    })
+    
+    output$table <- DT::renderDataTable({
+      DT::datatable(info_table, list(lengthMenu = c(10, 25, 30, 50, 75, 100), pageLength = 50))
+    })
+    
+    
+    #Make buttons work
+    observeEvent(input$btn, {
+      fitWindow("timeline", list(animation = TRUE))
+    })
+    observeEvent(input$btn2, {
+      centerItem("timeline", 1, (animation = TRUE))
+    })
+    observeEvent(input$btn3, {
+      centerTime("timeline", "02-01-2020", (animation = TRUE))
+    })
+    observeEvent(input$btn4, {
+      centerTime("timeline", "03-01-2020", (animation = TRUE))
+    })
+  }
+)
