@@ -2,8 +2,9 @@
 # Code relating to the preprints in response to COVID-19 timeline 
 # Maintained by the team @preLights
 # 
-# Last update: 28/03/2020
+# Last update: 30/03/2020
 #
+# Jonny Coates, jc2216@cam.ac.uk
 
 #Load relevant libraries
 library(shiny)
@@ -12,6 +13,7 @@ library(timevis)
 #Import data
 readRDS("final_data.rds") -> final_data
 readRDS("infotable.rds") -> info_table
+readRDS("resources.rds") -> resources
 
 
 #Define UI
@@ -42,7 +44,7 @@ shinyApp(
                              fluidRow(
                                column(2,
                                       h4(" ")),
-                               h3("Key: Orange = Event, Teal = Preprint, yellow = Important caveat/comment on preprint (see table). Last updated: 29/03/2020")),
+                               h3("Key: Orange = Event, Teal = Preprint, yellow = Important caveat/comment on preprint (see table). Last updated: 30/03/2020")),
                              
                              #br(),
                              
@@ -50,21 +52,43 @@ shinyApp(
                                column(2,
                                       h4("")),
                                br(),
-                               h3("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Mate Palfy, Sejal Davla & Jonny Coates. For questions or queries please contact jc2216@cam.ac.uk or prelights@biologists.com")),
+                               h3("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Sejal Davla, Mate Palfy & Jonny Coates. For questions or queries please contact prelights@biologists.com")),
                              
                              br(),
                              
                              fluidRow(
                                column(2,
                                       h4("")),
-                               h4("To use the timeline, navigate by clicking and dragging or through the use of the buttons. Hovering the mouse over an item will reveal more details pertaining to that point. Navigate between the timeline view and the table view using the navigation buttons at the top of this page"))
+                               h4("To use the timeline, navigate by clicking and dragging or through the use of the buttons. Hovering the mouse over an item will reveal more details pertaining to that point. Navigate between the timeline view and the table view using the navigation buttons at the top of this page")),
+                           
+                             br(),
+                             
+                             img(src = "prelights.png", height = 70, width = 200),
+                             
+                             fluidRow(
+                               column(2,
+                                      h4("")),
+                               p("preLights is a community service supported by The Company of Biologists, the not-for-profit publisher of Development, Journal of Cell Science, Journal of Experimental Biology, Disease Models & Mechanisms and Biology Open. The Company of Biologists is also a UK charity, providing grants and other support for the scientific community. 
+                                 Follow preLights on Twitter at https://twitter.com/preLights"))
                            )),
+                  
+                  
+                  
                   
                   # Page 2
                   
                   tabPanel("Table",
                            DT::dataTableOutput("table")
-                  )),
+                  ),
+                  
+                  #Page 3
+                  tabPanel("Resources",
+                           DT::dataTableOutput("resources")
+                  )
+                  
+                  
+                  # Close UI
+  ),
   
   
   # Server settings  
@@ -77,6 +101,9 @@ shinyApp(
       DT::datatable(info_table, list(lengthMenu = c(10, 25, 30, 50, 75, 100), pageLength = 50))
     })
     
+    output$resources <- DT::renderDataTable({
+      DT::datatable(resources, list(lengthMenu = c(5, 10, 15, 20), pageLength = 10))
+    })
     
     #Make buttons work
     observeEvent(input$btn, {
