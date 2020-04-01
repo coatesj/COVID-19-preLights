@@ -1,10 +1,13 @@
 #
 # Code relating to the preprints in response to COVID-19 timeline 
-# Maintained by the team @preLights
+# Maintained by the team @preLights (full team details in About page)
 # 
-# Last update: 30/03/2020
 #
-# Jonny Coates, jc2216@cam.ac.uk
+# Thanks to Dean Attali for developing the timevis library and writing an excellent clear guide to hosting a shiny app website on Digital Ocean.
+#
+# Last update: 01/04/2020
+#
+# For questions or quiries please contact Jonny Coates, jc2216@cam.ac.uk
 
 #Load relevant libraries
 library(shiny)
@@ -36,6 +39,8 @@ shinyApp(
                              actionButton("btn2", "Center on first reported case"),
                              actionButton("btn3", "Center on 1st Feb"),
                              actionButton("btn4", "Center on 1st March"),
+                             actionButton("btn5", "Center on 1st April"),
+                             actionButton("btn6", "Center on 1st May"),
                              
                              #Add rows underneath containing additional text
                              br(),
@@ -44,7 +49,7 @@ shinyApp(
                              fluidRow(
                                column(2,
                                       h4(" ")),
-                               h3("Key: Orange = Event, Teal = Preprint, yellow = Important caveat/comment on preprint (see table). Last updated: 30/03/2020")),
+                               h3("Key: Orange = Event, Teal = Preprint, yellow = Important caveat/comment on preprint (see further information). Last updated: 01/04/2020")),
                              
                              #br(),
                              
@@ -52,14 +57,14 @@ shinyApp(
                                column(2,
                                       h4("")),
                                br(),
-                               h3("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Sejal Davla, Mate Palfy & Jonny Coates. For questions or queries please contact prelights@biologists.com")),
+                               h3("This work is being maintained by Gautam Dey, Srivats Venkataramanan, Sundar Naganathan, Debbie Ho, Zhang-He Goh, Kirsty Hooper, Lars Hubatsch, Mariana De Niz, Sejal Davla, Mate Palfy & Jonny Coates. For questions or queries please contact prelights@biologists.com or Jonny Coates jc2216@cam.ac.uk")),
                              
                              br(),
                              
                              fluidRow(
                                column(2,
                                       h4("")),
-                               h4("To use the timeline, navigate by clicking and dragging or through the use of the buttons. Hovering the mouse over an item will reveal more details pertaining to that point. Navigate between the timeline view and the table view using the navigation buttons at the top of this page")),
+                               h4("To use the timeline, navigate by clicking and dragging or through the use of the buttons. Hovering the mouse over an item will reveal more details pertaining to that point. Navigate between the timeline view and the table view using the navigation buttons at the top of this page. This timeline will be updated weekly.")),
                            
                              br(),
                              
@@ -77,16 +82,41 @@ shinyApp(
                   
                   # Page 2
                   
-                  tabPanel("Table",
+                  tabPanel("Further information",
                            DT::dataTableOutput("table")
                   ),
                   
-                  #Page 3
+                  # Page 3
                   tabPanel("Resources",
                            DT::dataTableOutput("resources")
-                  )
+                  ),
                   
-                  
+                  # Page 4 - About
+                  tabPanel("About",
+                           fluidRow(
+                             column(2,
+                                    h4("")),
+                             br(),
+                             h3("We'd like to thank the tremendous effort of our the team who are maintaining this database (twitter handles): Gautam Dey (@Dey_Gautam), Srivats Venkataramanan (@srivatsv), Sundar Naganathan (@Sundar_Ram_07), Debbie Ho, Zhang-He Goh (@zhanghe_goh), Kirsty Hooper (@KirstyHooper13), Lars Hubatsch (@LarsHubatsch), Mariana De Niz (@mariana_deniz), Sejal Davla (@JustABrainThing), Mate Palfy (@mate_palfy) & Jonny Coates (@JACoates91). For questions or queries please contact prelights@biologists.com  or Jonny Coates jc2216@cam.ac.uk"),
+                             br(),
+                             h3("Please also find a curated prelist of interesting COVID-19 related preprints ",
+                             a("here ", 
+                               href = "https://prelights.biologists.com/prelists/wuhan-coronavirus-2019-ncov/"),
+                             ("or visit the preLights website "),
+                             a("here.",
+                               href = "https://prelights.biologists.com"))),
+                           
+                           br(),
+                           
+                           fluidRow(
+                             column(2,
+                                    h4("")),
+                             p("preLights is a community service supported by The Company of Biologists, the not-for-profit publisher of Development, Journal of Cell Science, Journal of Experimental Biology, Disease Models & Mechanisms and Biology Open. The Company of Biologists is also a UK charity, providing grants and other support for the scientific community. 
+                                 Follow preLights on Twitter at https://twitter.com/preLights")),
+                           br(),
+                           
+                           img(src = "prelights.png", height = 70, width = 200))
+                           
                   # Close UI
   ),
   
@@ -94,7 +124,7 @@ shinyApp(
   # Server settings  
   server <- function(input, output, session) {
     output$timeline <- renderTimevis({
-      timevis(final_data)
+      timevis(final_data, fit = FALSE)
     })
     
     output$table <- DT::renderDataTable({
@@ -117,6 +147,12 @@ shinyApp(
     })
     observeEvent(input$btn4, {
       centerTime("timeline", "03-01-2020", (animation = TRUE))
+    })
+    observeEvent(input$btn5, {
+      centerTime("timeline", "04-01-2020", (animation = TRUE))
+    })
+    observeEvent(input$btn6, {
+      centerTime("timeline", "05-01-2020", (animation = TRUE))
     })
   }
 )
