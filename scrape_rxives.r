@@ -23,6 +23,8 @@ remDr <- driver[["client"]]
 # remDr$open(silent = TRUE) # Also not necessary
 
 x <- c()
+doi_links <- c()
+
 for (n in seq(1, nrow(sheet), 1)){
  if (is.na(sheet[n,1])){
    print("No link.")
@@ -42,12 +44,14 @@ pub_string <- hlink %>%
 
 # Check whether published
 if("preprint" %in% pub_string & "article" %in% pub_string){
-  pub_doi <- "NA"
+  doi_links[n] <- "NA"
   x[n] <- 0
 } else if ("Now" %in% pub_string & "published" %in% pub_string){
   pub_doi <- tail(unlist(strsplit(pub_string, " ")),1)
   x[n] <- 1
+  doi_links[n] <- paste("https://doi.org/", pub_doi, sep = "")
 } else{
+  doi_links[n] <- "No preprint"
   x[n] <- -2
 }
 print(x)
@@ -57,3 +61,6 @@ print(x)
 # Close connections/stop browser
 remDr$close()
 driver[["server"]]$stop()
+
+# Write dataframe with publishing status and dois to file
+write.csv(data.frame(x, doi_links), 'published.csv')
